@@ -1,7 +1,7 @@
 require "../spec_helper"
 
 describe "AwsSES adapter" do
-  {% unless flag?("skip-integration") %}
+  {% if flag?("send_real_email") %}
     describe "deliver_now" do
       it "delivers the email successfully" do
         send_email_to_aws_ses text_body: "text template",
