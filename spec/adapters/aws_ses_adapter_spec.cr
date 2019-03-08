@@ -5,13 +5,13 @@ describe "AwsSES adapter" do
     describe "deliver_now" do
       it "delivers the email successfully" do
         send_email_to_aws_ses text_body: "text template",
-          to: [Carbon::Address.new("paul@thoughtbot.com")]
+          to: [Carbon::Address.new("keizo.suzuki3@gmail.com")]
       end
 
       it "delivers emails with reply_to set" do
         send_email_to_aws_ses text_body: "text template",
-          to: [Carbon::Address.new("paul@thoughtbot.com")],
-          headers: {"Reply-To" => "noreply@badsupport.com"}
+          to: [Carbon::Address.new("keizo.suzuki3@gmail.com")],
+          headers: {"Reply-To" => "keizo.suzuki3@gmail.com"}
       end
     end
   {% end %}
@@ -49,19 +49,19 @@ describe "AwsSES adapter" do
     end
 
     it "sets extracts reply-to header" do
-      headers = {"reply-to" => "noreply@badsupport.com", "Header" => "value"}
+      headers = {"reply-to" => "noreply@example.com", "Header" => "value"}
       params = params_for(headers: headers)
 
       params[:headers].should eq({"Header" => "value"})
-      params[:reply_to].should eq "noreply@badsupport.com"
+      params[:reply_to].should eq "noreply@example.com"
     end
 
     it "sets extracts reply-to header regardless of case" do
-      headers = {"Reply-To" => "noreply@badsupport.com", "Header" => "value"}
+      headers = {"Reply-To" => "noreply@example.com", "Header" => "value"}
       params = params_for(headers: headers)
 
       params[:headers].should eq({"Header" => "value"})
-      params[:reply_to].should eq "noreply@badsupport.com"
+      params[:reply_to].should eq "noreply@example.com"
     end
 
     it "handles send_mail_params" do
@@ -115,8 +115,10 @@ private def send_email_to_aws_ses(**email_attrs)
   key = ENV.fetch("AWS_SES_KEY")
   secret = ENV.fetch("AWS_SES_SECRET")
   region = ENV.fetch("AWS_SES_REGION")
+  from_address = ENV["AWS_SES_FROM_ADDRESS"]? || "from@example.com"
 
-  email = FakeEmail.new(**email_attrs)
+  email = FakeEmail.new(**email_attrs, from: Carbon::Address.new(from_address))
   adapter = Carbon::AwsSesAdapter.new(key: key, secret: secret, region: region, sandbox: true)
+
   adapter.deliver_now(email)
 end

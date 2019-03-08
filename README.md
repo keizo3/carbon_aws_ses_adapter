@@ -45,7 +45,7 @@ end
 AWS_SES_KEY=get_from_aws_ses_key
 AWS_SES_SECRET=get_from_aws_ses_secret
 AWS_SES_REGION=get_from_aws_ses_region
-
+AWS_SES_FROM_ADDRESS=verified_address
 ```
 
 ## Contributors
