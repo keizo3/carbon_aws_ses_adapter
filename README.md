@@ -48,6 +48,16 @@ AWS_SES_REGION=get_from_aws_ses_region
 AWS_SES_FROM_ADDRESS=verified_address
 ```
 
+## Contributing
+
+1.  Fork it ( https://github.com/keizo3/carbon_aws_ses_adapter )
+2.  Create your feature branch (git checkout -b my-new-feature)
+3.  Make your changes
+4.  Run `./bin/test` to run the specs, build shards, and check formatting
+5.  Commit your changes (git commit -am 'Add some feature')
+6.  Push to the branch (git push origin my-new-feature)
+7.  Create a new Pull Request
+
 ## Contributors
 
 - [keizo3](https://github.com/keizo3) - creator, maintainer
