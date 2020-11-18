@@ -24,7 +24,7 @@ class Carbon::AwsSesAdapter < Carbon::Adapter
 
     def initialize(@email : Carbon::Email, @key : String, @secret : String, @region : String, @sandbox = false)
       @base_uri = "email.#{@region}.amazonaws.com"
-      @date = Time.utc_now.to_s("%Y%m%dT%H%M%SZ")
+      @date = Time.utc.to_s("%Y%m%dT%H%M%SZ")
       @content_type = "application/x-www-form-urlencoded; charset=utf-8"
       @service = "ses"
       @algorithm = "AWS4-HMAC-SHA256"
@@ -59,24 +59,24 @@ class Carbon::AwsSesAdapter < Carbon::Adapter
 
     def send_mail_params
       param_string = "Action=SendEmail"
-      param_string += "&Source=#{URI.escape(format_name_address(email.from))}"
+      param_string += "&Source=#{URI.encode_www_form(format_name_address(email.from), space_to_plus: false)}"
 
       email.to.each_with_index(1) do |to_address, idx|
-        param_string += "&Destination.ToAddresses.member.#{idx}=#{URI.escape(format_name_address(to_address))}"
+        param_string += "&Destination.ToAddresses.member.#{idx}=#{URI.encode_www_form(format_name_address(to_address), space_to_plus: false)}"
       end
 
       email.cc.each_with_index(1) do |cc_address, idx|
-        param_string += "&Destination.CcAddresses.member.#{idx}=#{URI.escape(format_name_address(cc_address))}"
+        param_string += "&Destination.CcAddresses.member.#{idx}=#{URI.encode_www_form(format_name_address(cc_address), space_to_plus: false)}"
       end
 
       email.bcc.each_with_index(1) do |bcc_address, idx|
-        param_string += "&Destination.BccAddresses.member.#{idx}=#{URI.escape(format_name_address(bcc_address))}"
+        param_string += "&Destination.BccAddresses.member.#{idx}=#{URI.encode_www_form(format_name_address(bcc_address), space_to_plus: false)}"
       end
 
-      param_string += "&Message.Subject.Data=#{URI.escape(email.subject)}"
-      param_string += "&Message.Body.Text.Data=#{URI.escape(email.text_body.to_s)}" if email.text_body && !email.text_body.to_s.empty?
-      param_string += "&Message.Body.Html.Data=#{URI.escape(email.html_body.to_s)}" if email.html_body && !email.html_body.to_s.empty?
-      param_string += "&ReplyToAddresses.member.1=#{URI.escape(reply_to_address.to_s)}" if reply_to_address && !reply_to_address.to_s.empty?
+      param_string += "&Message.Subject.Data=#{URI.encode_www_form(email.subject, space_to_plus: false)}"
+      param_string += "&Message.Body.Text.Data=#{URI.encode_www_form(email.text_body.to_s, space_to_plus: false)}" if email.text_body && !email.text_body.to_s.empty?
+      param_string += "&Message.Body.Html.Data=#{URI.encode_www_form(email.html_body.to_s, space_to_plus: false)}" if email.html_body && !email.html_body.to_s.empty?
+      param_string += "&ReplyToAddresses.member.1=#{URI.encode_www_form(reply_to_address.to_s, space_to_plus: false)}" if reply_to_address && !reply_to_address.to_s.empty?
 
       param_string
     end
