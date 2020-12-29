@@ -1,0 +1,26 @@
+name: Shard CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  LintAndTest:
+    strategy:
+      matrix:
+        container:
+          - crystallang/crystal:latest-alpine
+          - crystallang/crystal:nightly-alpine
+
+    runs-on: ubuntu-latest
+
+    container: ${{ matrix.container }}
+
+    steps:
+      - name: Check format
+        run: crystal tool format --check
+
+      - name: Run tests
+        run: crystal spec
