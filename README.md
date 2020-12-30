@@ -1,6 +1,6 @@
 # carbon_aws_ses_adapter
 
-[![Build Status](https://travis-ci.org/keizo3/carbon_aws_ses_adapter.svg?branch=master)](https://travis-ci.org/keizo3/carbon_aws_ses_adapter)
+![Build Status](https://github.com/keizo3/carbon_aws_ses_adapter/workflows/Shard%20CI/badge.svg)
 
 This is luckyframework/carbon's adapter for AWS SES
 
@@ -16,6 +16,12 @@ dependencies:
     github: keizo3/carbon_aws_ses_adapter
 ```
 
+Add this to your application's `shards.cr`:
+
+```crystal
+require "carbon_aws_ses_adapter"
+```
+
 ## Usage
 
 ### Configure the mailer class
@@ -24,6 +30,7 @@ dependencies:
 2. create iam user for send AWS SES on your AWS Console
 3. get iam user credentials
 4. setting adapter
+
 ```crystal
 require "carbon_aws_ses_adapter"
 
@@ -34,10 +41,10 @@ end
 
 ## Development
 
-* `shards install`
-* Make changes
-* `crystal spec` (will skip sending test emails to AWS SES)
-* `crystal spec -D send_real_email` requires a `AWS_SES_KEY` `AWS_SES_SECRET` `AWS_SES_REGION` ENV variable. Set this in a .env file:
+- `shards install`
+- Make changes
+- `crystal spec` (will skip sending test emails to AWS SES)
+- `crystal spec -D send_real_email` requires a `AWS_SES_KEY` `AWS_SES_SECRET` `AWS_SES_REGION` ENV variable. Set this in a .env file:
 
 ```
 # in .env
