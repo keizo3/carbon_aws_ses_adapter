@@ -1,5 +1,5 @@
 name: carbon_aws_ses_adapter
-version: 1.1.0
+version: 1.2.0
 
 authors:
   - keizo3 <keizo.suzuki3@gmail.com>
