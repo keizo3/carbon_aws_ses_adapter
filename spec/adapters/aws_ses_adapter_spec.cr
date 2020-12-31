@@ -4,14 +4,12 @@ describe "AwsSES adapter" do
   {% if flag?("send_real_email") %}
     describe "deliver_now" do
       it "delivers the email successfully" do
-        send_email_to_aws_ses text_body: "text template",
-          to: [Carbon::Address.new("keizo.suzuki3@gmail.com")]
+        send_email_to_aws_ses text_body: "This is a test sent from https://keizo3/carbon_aws_ses_adapter."
       end
 
       it "delivers emails with reply_to set" do
-        send_email_to_aws_ses text_body: "text template",
-          to: [Carbon::Address.new("keizo.suzuki3@gmail.com")],
-          headers: {"Reply-To" => "keizo.suzuki3@gmail.com"}
+        send_email_to_aws_ses text_body: "This is a test sent from https://keizo3/carbon_aws_ses_adapter.",
+          headers: {"Reply-To" => ENV.fetch("AWS_SES_TO_ADDRESS")}
       end
     end
   {% end %}
@@ -29,7 +27,7 @@ describe "AwsSES adapter" do
     end
 
     it "create authorization" do
-      params_for()[:authorization].should eq "AWS4-HMAC-SHA256 Credential=fake_key/20190102/fake_region/ses/aws4_request, SignedHeaders=content-type;host;x-amz-date, Signature=64e1f5faffaafd5647b690bd7aa8bfc1bfc40f743d911344db4786d548eb6cc3"
+      params_for()[:authorization].should eq "AWS4-HMAC-SHA256 Credential=fake_key/20190102/fake_region/ses/aws4_request, SignedHeaders=content-type;host;x-amz-date, Signature=7f0bbf212f6f9e232dde0e0917be4d296a328459e051f9032e725d9c13af8264"
     end
 
     it "create k_signing" do
@@ -37,11 +35,11 @@ describe "AwsSES adapter" do
     end
 
     it "create m_signing" do
-      params_for()[:m_signing].should eq "AWS4-HMAC-SHA256\n20190102T154556Z\n20190102/fake_region/ses/aws4_request\nd3cc80138c455e26a60d7bef8dbd29a2afdda481fe289d567a529ab1168c059e"
+      params_for()[:m_signing].should eq "AWS4-HMAC-SHA256\n20190102T154556Z\n20190102/fake_region/ses/aws4_request\ne0c5ef7baf80c18a6805b9f9d4a66c17fcb8de436686d61d5e328f499dae080a"
     end
 
     it "create canonical_string" do
-      params_for()[:canonical_string].should eq "POST\n/\n\ncontent-type:application/x-www-form-urlencoded; charset=utf-8\nhost:email.fake_region.amazonaws.com\nx-amz-date:20190102T154556Z\n\ncontent-type;host;x-amz-date\nba4b738819697b17efbd1154e1e758dac63d99af848615d146296e066214e806"
+      params_for()[:canonical_string].should eq "POST\n/\n\ncontent-type:application/x-www-form-urlencoded; charset=utf-8\nhost:email.fake_region.amazonaws.com\nx-amz-date:20190102T154556Z\n\ncontent-type;host;x-amz-date\n898544300f10156174ad93313e7259be9e8f17e5dd21a60cfa845fa56d8479a9"
     end
 
     it "hash256" do
@@ -65,7 +63,7 @@ describe "AwsSES adapter" do
     end
 
     it "handles send_mail_params" do
-      params_for()[:send_mail_params].should eq "Action=SendEmail&Source=%3Cfrom%40example.com%3E&Message.Subject.Data=subject"
+      params_for()[:send_mail_params].should eq "Action=SendEmail&Source=%3Cfrom%40example.com%3E&Message.Subject.Data=%5BCarbonAwsSesAdapter%5D%20Test%20Email"
     end
 
     it "handles send_mail_params multi addresses with name" do
@@ -84,7 +82,7 @@ describe "AwsSES adapter" do
         bcc: [bcc_without_name, bcc_with_name]
       )
 
-      multiaddress_params[:send_mail_params].should eq "Action=SendEmail&Source=Sally%20%3Cfrom%40example.com%3E&Destination.ToAddresses.member.1=%3Cto%40example.com%3E&Destination.ToAddresses.member.2=Jimmy%20%3Cto2%40example.com%3E&Destination.CcAddresses.member.1=%3Ccc%40example.com%3E&Destination.CcAddresses.member.2=Kim%20%3Ccc2%40example.com%3E&Destination.BccAddresses.member.1=%3Cbcc%40example.com%3E&Destination.BccAddresses.member.2=James%20%3Cbcc2%40example.com%3E&Message.Subject.Data=subject"
+      multiaddress_params[:send_mail_params].should eq "Action=SendEmail&Source=Sally%20%3Cfrom%40example.com%3E&Destination.ToAddresses.member.1=%3Cto%40example.com%3E&Destination.ToAddresses.member.2=Jimmy%20%3Cto2%40example.com%3E&Destination.CcAddresses.member.1=%3Ccc%40example.com%3E&Destination.CcAddresses.member.2=Kim%20%3Ccc2%40example.com%3E&Destination.BccAddresses.member.1=%3Cbcc%40example.com%3E&Destination.BccAddresses.member.2=James%20%3Cbcc2%40example.com%3E&Message.Subject.Data=%5BCarbonAwsSesAdapter%5D%20Test%20Email"
     end
 
     it "sets the subject" do
@@ -92,9 +90,9 @@ describe "AwsSES adapter" do
     end
 
     it "sets the message body" do
-      params_for(text_body: "text")[:send_mail_params].should eq "Action=SendEmail&Source=%3Cfrom%40example.com%3E&Message.Subject.Data=subject&Message.Body.Text.Data=text"
-      params_for(html_body: "html")[:send_mail_params].should eq "Action=SendEmail&Source=%3Cfrom%40example.com%3E&Message.Subject.Data=subject&Message.Body.Html.Data=html"
-      params_for(text_body: "text", html_body: "html")[:send_mail_params].should eq "Action=SendEmail&Source=%3Cfrom%40example.com%3E&Message.Subject.Data=subject&Message.Body.Text.Data=text&Message.Body.Html.Data=html"
+      params_for(text_body: "text")[:send_mail_params].should eq "Action=SendEmail&Source=%3Cfrom%40example.com%3E&Message.Subject.Data=%5BCarbonAwsSesAdapter%5D%20Test%20Email&Message.Body.Text.Data=text"
+      params_for(html_body: "html")[:send_mail_params].should eq "Action=SendEmail&Source=%3Cfrom%40example.com%3E&Message.Subject.Data=%5BCarbonAwsSesAdapter%5D%20Test%20Email&Message.Body.Html.Data=html"
+      params_for(text_body: "text", html_body: "html")[:send_mail_params].should eq "Action=SendEmail&Source=%3Cfrom%40example.com%3E&Message.Subject.Data=%5BCarbonAwsSesAdapter%5D%20Test%20Email&Message.Body.Text.Data=text&Message.Body.Html.Data=html"
     end
   end
 end
@@ -112,12 +110,13 @@ private def params_for(**email_attrs)
 end
 
 private def send_email_to_aws_ses(**email_attrs)
-  key = ENV.fetch("AWS_SES_KEY")
-  secret = ENV.fetch("AWS_SES_SECRET")
+  key = ENV.fetch("AWS_SES_ACCESS_KEY")
+  secret = ENV.fetch("AWS_SES_SECRET_KEY")
   region = ENV.fetch("AWS_SES_REGION")
-  from_address = ENV["AWS_SES_FROM_ADDRESS"]? || "from@example.com"
+  from_address = ENV.fetch("AWS_SES_FROM_ADDRESS", "from@example.com")
+  to_address = ENV.fetch("AWS_SES_TO_ADDRESS")
 
-  email = FakeEmail.new(**email_attrs, from: Carbon::Address.new(from_address))
+  email = FakeEmail.new(**email_attrs, to: [Carbon::Address.new(to_address)], from: Carbon::Address.new(from_address))
   adapter = Carbon::AwsSesAdapter.new(key: key, secret: secret, region: region, sandbox: true)
 
   adapter.deliver_now(email)

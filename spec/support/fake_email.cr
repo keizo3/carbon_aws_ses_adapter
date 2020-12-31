@@ -7,7 +7,7 @@ class FakeEmail < Carbon::Email
     @cc = [] of Carbon::Address,
     @bcc = [] of Carbon::Address,
     @headers = {} of String => String,
-    @subject = "subject",
+    @subject = "[CarbonAwsSesAdapter] Test Email",
     @text_body : String? = nil,
     @html_body : String? = nil
   )

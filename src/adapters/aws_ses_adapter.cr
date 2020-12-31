@@ -135,10 +135,10 @@ class Carbon::AwsSesAdapter < Carbon::Adapter
       canonical_string += "#{hash256(send_mail_params)}"
     end
 
-    private def hash256(data)
+    private def hash256(data : String) : String
       hash = OpenSSL::Digest.new("SHA256")
       hash.update(data)
-      hash.hexdigest
+      hash.final.hexstring
     end
 
     @_client : HTTP::Client?

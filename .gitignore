@@ -2,3 +2,4 @@
 /lib/
 /.shards/
 /shard.lock
+.env
