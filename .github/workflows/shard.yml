@@ -10,13 +10,15 @@ jobs:
   LintAndTest:
     strategy:
       matrix:
-        container:
-          - crystallang/crystal:latest-alpine
-          - crystallang/crystal:nightly-alpine
+        crystal_version:
+          - 0.35.1
+          - 0.36.1
+          - latest
+          - nightly
 
     runs-on: ubuntu-latest
 
-    container: ${{ matrix.container }}
+    container: crystallang/crystal:${{ matrix.crystal_version }}-alpine
 
     steps:
       - name: Check format
