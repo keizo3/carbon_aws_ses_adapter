@@ -1,18 +1,19 @@
 name: carbon_aws_ses_adapter
-version: 1.2.0
+description: An email adapter for Amazon SES that integrates with Carbon
+version: 1.3.0
 
 authors:
   - keizo3 <keizo.suzuki3@gmail.com>
 
-crystal: 0.35.1
+crystal: ">= 0.35.1, < 2.0.0"
 
 dependencies:
   habitat:
     github: luckyframework/habitat
-    version: ~> 0.4.4
+    version: ~> 0.4.7
   carbon:
     github: luckyframework/carbon
-    version: ~> 0.1.2
+    version: ~> 0.1.4
 
 development_dependencies:
   dotenv:
