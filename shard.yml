@@ -13,7 +13,7 @@ dependencies:
     version: ~> 0.4.7
   carbon:
     github: luckyframework/carbon
-    version: ~> 0.1.4
+    version: >= 0.1.4
 
 development_dependencies:
   dotenv:
